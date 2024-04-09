@@ -1,0 +1,27 @@
+@startuml
+
+start
+:__init__();
+:show();
+:move_button.clicked;
+if (x_position < max_distance) then (yes)
+  :move_x_axis_plus();
+  if (x_position > 0) then (yes)
+    :start_home_timer();
+  else (no)
+    :init_graph_progress();
+  endif
+else (no)
+  :stop_timer();
+endif
+:closeEvent();
+:write_to_log();
+:process_button_click();
+:auto_test();
+:set_testing_to_false();
+:update_graph();
+:read_button_log();
+:init_graph_progress();
+stop
+
+@enduml

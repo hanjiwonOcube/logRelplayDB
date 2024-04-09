@@ -1,0 +1,60 @@
+@startuml
+
+class XAxisController {
+    - x_position: int
+    - y_position: int
+    - move_speed: int
+    - max_distance: int
+    - testing: bool
+    - home_timer: QTimer
+    - central_widget: QWidget
+    - layout: QVBoxLayout
+    - label: QLabel
+    - graphWidget: PlotWidget
+    - graph_data: list
+    - progress_bar: QProgressBar
+    + __init__()
+    + move_x_axis_plus()
+    + move_y_axis()
+    + start_home_timer()
+    + home_x_axis()
+    + home_y_axis()
+    + closeEvent(event)
+    + auto_test()
+    + set_testing_to_false()
+    + process_button_click(click)
+    + write_to_log(message)
+    + update_graph()
+    + read_button_log(file_path)
+    + init_graph_progress()
+}
+
+QMainWindow --|> XAxisController
+
+class QApplication
+class QWidget
+class QMainWindow
+class QLabel
+class QPushButton
+class QVBoxLayout
+class QMessageBox
+class QProgressBar
+class QTimer
+
+QMainWindow -- QApplication
+XAxisController -down-> QApplication
+XAxisController -- QVBoxLayout
+XAxisController -- QLabel
+XAxisController -- QPushButton
+XAxisController -- QMessageBox
+XAxisController -- QProgressBar
+XAxisController -- QTimer
+QProgressBar -- QWidget
+QTimer -- QWidget
+QPushButton -- QWidget
+QLabel -- QWidget
+QVBoxLayout -- QWidget
+QMessageBox -- QWidget
+QMainWindow -- QWidget
+
+@enduml

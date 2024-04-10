@@ -697,7 +697,46 @@ class XAxisController(QMainWindow):
         self.judge_tableWidget.setColumnWidth(2, 150)  # 세 번째 열의 폭 조정
         self.judge_tableWidget.setItem(row_position, 0, QTableWidgetItem(self.judge))#판정
         self.judge_tableWidget.setItem(row_position, 1, QTableWidgetItem(self.classification))#분류
-        self.judge_tableWidget.setItem(row_position, 2, QTableWidgetItem(current_time_aligned))#시간                                     
+        self.judge_tableWidget.setItem(row_position, 2, QTableWidgetItem(current_time_aligned))#시간
+        
+        self.fetch_judge_table()                                     
+
+    def fetch_judge_table(self):
+        # MySQL 서버 연결
+        conn = pymysql.connect(
+            host="localhost",
+            user="root",
+            password="0000",
+            database="judge_db",
+            charset='utf8',
+            cursorclass=pymysql.cursors.DictCursor  # DictCursor를 사용하여 결과를 딕셔너리 형태로 가져옴
+        )
+        # self.connection = pymysql.connect(
+        #     host='localhost',
+        #     user='root',
+        #     password='0000',
+        #     database='judge_db',
+        #     charset='utf8',
+        #     cursorclass=pymysql.cursors.DictCursor
+        # )
+
+        # 커서 생성
+        cursor = conn.cursor()
+
+        # SQL 쿼리 실행
+        sql_query = "SELECT * FROM judge"
+        cursor.execute(sql_query)
+
+        # 결과 가져오기
+        records = cursor.fetchall()
+
+        # 가져온 레코드 출력
+        for record in records:
+            print(record)
+
+        # 커서와 연결 종료
+        cursor.close()
+        conn.close()
 
     def setButtonDisabled(self):
         self.move_x_plus_button.setEnabled(False)

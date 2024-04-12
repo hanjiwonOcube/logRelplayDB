@@ -60,10 +60,8 @@ class SQLExecutor:
             #sql = "USE judge_db;"
             cursor.execute(sql)
             connection.commit()       
-                
-    def __init__(self):
-        super().__init__()
         
+    def pattern_match_db(self):
         # MySQL 연결 설정
         self.connection = pymysql.connect(
             host='localhost',
@@ -165,7 +163,7 @@ class XAxisController(QMainWindow):
         self.judge_textEdit.setText("")     
         self.judge_textEdit.setFixedSize(310, 100)
         self.layout.addWidget(self.judge_textEdit)
-        self.judge_textEdit.setVisible(False)
+        #self.judge_textEdit.setVisible(False)
         
         # QTableWidget 생성
         self.judge_tableWidget = QTableWidget(self)
@@ -185,6 +183,7 @@ class XAxisController(QMainWindow):
 
         # 위젯 레이아웃에 QTableWidget 추가
         self.layout.addWidget(self.judge_tableWidget)
+        self.judge_tableWidget.setVisible(False)
     
 
         self.graphWidget = pg.PlotWidget()
@@ -578,9 +577,7 @@ class XAxisController(QMainWindow):
             
     
     def auto_test(self):
-        # SQLExecutor 클래스의 인스턴스 생성
-        self.sql_executor = SQLExecutor()
-        
+                
         if self.repeat_count_edit.text() == '':
             QMessageBox.warning(self, "경고", "반복 횟수를 입력하세요.", QMessageBox.Ok)
             return
@@ -644,7 +641,13 @@ class XAxisController(QMainWindow):
             self.pattern_judge()
             self.init_reproduce_info()
             self.init_judge()
-            self.init_classification()
+            self.init_classification()            
+            
+            sqle = SQLExecutor()
+            
+            sqle.pattern_match_db()
+        
+            self.fetch_judge_table()   
                         
         else:
             # 스레드가 아직 실행 중인 경우, 재귀적으로 다시 호출하여 잠시 후에 다시 확인합니다.
@@ -698,8 +701,7 @@ class XAxisController(QMainWindow):
         self.judge_tableWidget.setItem(row_position, 0, QTableWidgetItem(self.judge))#판정
         self.judge_tableWidget.setItem(row_position, 1, QTableWidgetItem(self.classification))#분류
         self.judge_tableWidget.setItem(row_position, 2, QTableWidgetItem(current_time_aligned))#시간
-        
-        self.fetch_judge_table()                                     
+                                          
 
     def fetch_judge_table(self):
         # MySQL 서버 연결
@@ -727,12 +729,36 @@ class XAxisController(QMainWindow):
         sql_query = "SELECT * FROM judge"
         cursor.execute(sql_query)
 
-        # 결과 가져오기
-        records = cursor.fetchall()
+        # # 결과 가져오기
+        # records = cursor.fetchall()
 
-        # 가져온 레코드 출력
-        for record in records:
-            print(record)
+        # # 가져온 레코드 출력
+        # for record in records:
+        #     print(record)            
+        #     #self.judge_textEdit.append(record)
+        #     self.judge_textEdit.append(str(record) + "\n")
+        
+        # # 결과 가져오기
+        # last_record = None
+        # while True:
+        #     record = cursor.fetchone()
+        #     if not record:
+        #         break
+        #     last_record = record
+
+        # # 마지막 레코드 출력
+        # if last_record:
+        #     print(last_record)
+        #     # self.judge_textEdit.append(last_record)
+        #     self.judge_textEdit.append(str(last_record) + "\n")
+        
+        # 마지막 레코드 가져오기
+        last_record = cursor.fetchall()[-1]
+
+        # 마지막 레코드 출력
+        if last_record:
+            print(last_record)
+            self.judge_textEdit.append(str(last_record) + "\n")
 
         # 커서와 연결 종료
         cursor.close()

@@ -52,7 +52,8 @@ class ClickThread(QThread):
 class SQLExecutor:
     def execute_sql_file(self, filename, connection):
         # SQL 파일 열기
-        with open(filename, 'r') as file:
+        #with open(filename, 'r') as file:
+        with open(filename, 'rt', encoding='UTF8') as file:
             sql = file.read()
 
         # SQL 문 실행

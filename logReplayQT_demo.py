@@ -871,12 +871,13 @@ class XAxisController(QMainWindow):
 
 
 def show_logo(app):
-    #로고 팝업 시작
+    # 로고 팝업 시작
     # 이미지 경로 설정
     
     # 현재 스크립트 파일의 디렉토리를 가져옴
     script_dir = os.path.dirname(os.path.realpath(__file__))
         
+    print("script_dir : " + script_dir)    
     # 아이콘 파일의 경로 생성
     image_path = os.path.join(script_dir, 'logo.jpeg')  # 이미지 파일 경로를 적절히 지정해주세요
     
@@ -885,14 +886,13 @@ def show_logo(app):
     
     # 이미지 불러오기
     pixmap = QPixmap(image_path)
+    print("image_path : " + image_path)
     
     # QLabel에 이미지 설정
     label.setPixmap(pixmap)
-    
+
     # 이미지 크기 설정 (화면 8분의 1 크기)
     label.resize(pixmap.width(), pixmap.height())
-    
-
     
     # QLabel을 화면 중앙에 표시
     screen = app.primaryScreen().geometry()
@@ -905,22 +905,32 @@ def show_logo(app):
     
     # QLabel 표시
     label.show()
-    
-    # 2초 후에 QLabel 닫기
-    time.sleep(2)
-    QTimer.singleShot(100, label.close)
-    
+
+    # QTimer를 사용하여 5초 후에 QLabel 닫기
+    QTimer.singleShot(5000, label.close)
+
     # Qt 이벤트 루프 처리
     app.processEvents()
-    #로고 팝업 끝
 
+    return label
+
+def start_main_window():
+    global main_window
+    # 여기서 실제 메인 창을 초기화하고 보여줌
+    main_window = XAxisController()
+    main_window.show()
 
 def main():
     app = QApplication(sys.argv)
-    show_logo(app)
-    window = XAxisController()
-    window.show()
+    
+    # 로고 표시
+    label = show_logo(app)
+    
+    # 5초 후에 메인 창을 표시하는 타이머 설정
+    QTimer.singleShot(5000, start_main_window)
+    
+    # 이벤트 루프 실행
     sys.exit(app.exec_())
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     main()
